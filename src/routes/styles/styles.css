@@ -9,6 +9,12 @@ main {
     overflow: hidden; /* To ensure no overflow issues */
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* This will apply overflow hidden globally */
+}
+
 .container {
     position: relative;
     width: 100%;

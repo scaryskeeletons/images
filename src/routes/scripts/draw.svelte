@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
 
   let canvas, ctx;
   let isDrawing = false;
@@ -11,11 +11,11 @@
 
   function saveState() {
     if (currentStateIndex + 1 < states.length) {
-      states = states.slice(0, currentStateIndex + 1); // Remove all states after current index
+      states = states.slice(0, currentStateIndex + 1);
     }
-    states.push(canvas.toDataURL()); // Save current canvas as an image
+    states.push(canvas.toDataURL());
     currentStateIndex++;
-    if (states.length > 5) { // Only keep last 5 states
+    if (states.length > 10) {
       states.shift();
       currentStateIndex--;
     }
@@ -45,36 +45,37 @@
   }
 
   function startDrawing(event) {
+    event.preventDefault(); // Prevent default to stop any browser default behavior
     if (!ctx) return;
     isDrawing = true;
     ctx.beginPath();
     const {x, y} = getPosition(event);
     ctx.moveTo(x, y);
-    console.log('Drawing started with color:', color, 'and line width:', lineWidth);
   }
 
   function draw(event) {
+    event.preventDefault();
     if (!isDrawing || !ctx) return;
     const {x, y} = getPosition(event);
     ctx.lineTo(x, y);
     ctx.stroke();
-    console.log('Drawing');
   }
 
-  function stopDrawing() {
-    if (!ctx) return;
+  function stopDrawing(event) {
+    event.preventDefault();
+    if (!ctx || !isDrawing) return;
     isDrawing = false;
-    console.log('Drawing stopped');
-    saveState(); // Save state when drawing stops
+    saveState();
   }
 
   function getPosition(event) {
-    let clientX = event.clientX;
-    let clientY = event.clientY;
-
-    if (event.touches) {
+    let clientX, clientY;
+    if (event.touches && event.touches.length) {
       clientX = event.touches[0].clientX;
       clientY = event.touches[0].clientY;
+    } else {
+      clientX = event.clientX;
+      clientY = event.clientY;
     }
 
     return {
@@ -86,7 +87,7 @@
   onMount(() => {
     ctx = canvas.getContext('2d');
     setupCanvas();
-    saveState(); // Save the initial blank state
+    saveState();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -98,21 +99,19 @@
     canvas.height = window.innerHeight;
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
-    console.log('Canvas setup with initial styles');
   }
 
   function handleResize() {
     setupCanvas();
-    restoreState(); // Redraw the current state to the resized canvas
+    restoreState();
   }
 
-  // Reactively update the styles directly
   $: if (ctx) {
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
-    console.log(`Reactive update - Color: ${color}, Line Width: ${lineWidth}`);
   }
 </script>
+
 
 <div class="toolbar">
   <input type="color" bind:value={color}/>
