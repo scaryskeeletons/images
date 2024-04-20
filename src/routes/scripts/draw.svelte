@@ -17,7 +17,7 @@
     currentStateIndex++;
     if (states.length > 10) {
       states.shift();
-      currentStateIndex--;
+      currentStateIndex--; // current state minus 1
     }
   }
 
