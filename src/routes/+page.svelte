@@ -16,7 +16,7 @@
 <main class="main-content">
     <DrawingTool />
     <div class="ca-copy" on:click={copyText}>
-        CA
+        View CA
       </div>
     <div class="social-links">
         <a href="https://twitter.com/noobcto/" target="_blank" rel="noopener" class="social-link">
