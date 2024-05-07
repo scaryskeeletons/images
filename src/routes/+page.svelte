@@ -2,9 +2,9 @@
     import DrawingTool from "./scripts/draw.svelte";
 
     function copyText() {
-    navigator.clipboard.writeText('CA').then(() => {
+    navigator.clipboard.writeText('8P8rSfV6uYkkPwxwPTYXBsvea2ZntzZ1c6M3Y2hwKJ7U').then(() => {
       // Success: Display a success message
-      alert('Text "CA" copied to clipboard!');
+      alert('CA: 8P8rSfV6uYkkPwxwPTYXBsvea2ZntzZ1c6M3Y2hwKJ7U (Copied to clipboard)');
     }, (err) => {
       // Error: Log and alert the user of an error
       console.error('Failed to copy text: ', err);
