@@ -17,8 +17,8 @@ html, body {
 
 .ca-copy {
     position: fixed;
-    top: 5px;
-    right: 5px;
+    bottom: 5px;
+    left: 5px;
     background-color: #f0f0f0; /* Light grey background */
     padding: 5px 10px;
     border-radius: 5px;
