@@ -6,6 +6,7 @@
   export let color = '#000000'; // Default color
   export let lineWidth = 4;     // Default line width
 
+  let lastX, lastY; // Track the last points for smooth curves
   let states = [];
   let currentStateIndex = -1;
 
@@ -17,7 +18,7 @@
     currentStateIndex++;
     if (states.length > 10) {
       states.shift();
-      currentStateIndex--; // current state minus 1
+      currentStateIndex--; // Adjust the index after shifting
     }
   }
 
@@ -45,11 +46,12 @@
   }
 
   function startDrawing(event) {
-    event.preventDefault(); // Prevent default to stop any browser default behavior
-    if (!ctx) return;
+    event.preventDefault();
     isDrawing = true;
-    ctx.beginPath();
     const {x, y} = getPosition(event);
+    lastX = x;
+    lastY = y;
+    ctx.beginPath();
     ctx.moveTo(x, y);
   }
 
@@ -57,14 +59,15 @@
     event.preventDefault();
     if (!isDrawing || !ctx) return;
     const {x, y} = getPosition(event);
-    ctx.lineTo(x, y);
-    ctx.stroke();
+    smoothLine(x, y);
   }
 
   function stopDrawing(event) {
     event.preventDefault();
-    if (!ctx || !isDrawing) return;
+    if (!isDrawing) return;
     isDrawing = false;
+    ctx.lineTo(lastX, lastY);
+    ctx.stroke(); // Draw the final segment
     saveState();
   }
 
@@ -77,11 +80,17 @@
       clientX = event.clientX;
       clientY = event.clientY;
     }
-
     return {
       x: clientX - canvas.getBoundingClientRect().left,
       y: clientY - canvas.getBoundingClientRect().top
     };
+  }
+
+  function smoothLine(x, y) {
+    ctx.quadraticCurveTo(lastX, lastY, (lastX + x) / 2, (lastY + y) / 2);
+    ctx.stroke();
+    lastX = x;
+    lastY = y;
   }
 
   onMount(() => {
@@ -95,15 +104,21 @@
   });
 
   function setupCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth * devicePixelRatio;
+    canvas.height = window.innerHeight * devicePixelRatio;
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round'; // Smooth the end of the line
+    ctx.lineJoin = 'round'; // Smooth the joint of the line
   }
 
   function handleResize() {
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     setupCanvas();
-    restoreState();
+    ctx.putImageData(imgData, 0, 0);
   }
 
   $: if (ctx) {
@@ -111,7 +126,6 @@
     ctx.lineWidth = lineWidth;
   }
 </script>
-
 
 <div class="toolbar">
   <input type="color" bind:value={color}/>

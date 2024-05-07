@@ -1,11 +1,25 @@
 <script>
     import DrawingTool from "./scripts/draw.svelte";
+
+    function copyText() {
+    navigator.clipboard.writeText('CA').then(() => {
+      // Success: Display a success message
+      alert('Text "CA" copied to clipboard!');
+    }, (err) => {
+      // Error: Log and alert the user of an error
+      console.error('Failed to copy text: ', err);
+      alert('Failed to copy text.');
+    });
+  }
 </script>
 
 <main class="main-content">
     <DrawingTool />
+    <div class="ca-copy" on:click={copyText}>
+        CA
+      </div>
     <div class="social-links">
-        <a href="https://twitter.com/noobonsolanaCTO/" target="_blank" rel="noopener" class="social-link">
+        <a href="https://twitter.com/noobcto/" target="_blank" rel="noopener" class="social-link">
             <img src="https://github.com/scaryskeeletons/images/raw/main/twitter.webp" alt="Twitter"/>
         </a>
         <a href="https://dexscreener.com/solana/8P8rSfV6uYkkPwxwPTYXBsvea2ZntzZ1c6M3Y2hwKJ7U" target="_blank" rel="noopener" class="social-link">

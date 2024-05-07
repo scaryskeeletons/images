@@ -15,6 +15,17 @@ html, body {
     overflow: hidden; /* This will apply overflow hidden globally */
 }
 
+.ca-copy {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    background-color: #f0f0f0; /* Light grey background */
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000; /* Make sure it is above other content */
+}
+
 .container {
     position: relative;
     width: 100%;
