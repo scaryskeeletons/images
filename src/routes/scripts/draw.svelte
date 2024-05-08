@@ -121,7 +121,7 @@
     ctx.putImageData(imgData, 0, 0);
   }
 
-  $: if (ctx) {
+   $: if (ctx) {
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
   }
